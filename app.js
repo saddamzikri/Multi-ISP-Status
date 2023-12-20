@@ -19,10 +19,9 @@ app.post('/multi-isp-status', (req, res) => {
         return res.status(400).send('Invalid data provided');
     }
 
-    // Membangun kunci unik untuk setiap kombinasi node dan ISP
-    const key = `${node}-${isp}`;
-    // Memperbarui status di memori
-    statuses[key] = status;
+    const key = `${node}-${isp}`; // Membangun kunci unik untuk setiap kombinasi node dan ISP
+    const timestamp = Math.floor(Date.now() / 1000); //mendapatkan timestamp Unix saat ini
+    statuses[key] = {status, timestamp }; // Memperbarui status di memori
 
     res.send(`Status updated for node: ${node}, ISP: ${isp}, Status: ${status}`);
 });
@@ -32,7 +31,9 @@ app.get('/multi-isp-status', (req, res) => {
     let response = '';
     for (const key in statuses) {
         const [node, isp] = key.split('-');
+        const { status, timestamp } = statuses[key];
         response += `multiisp_status{node="${node}",isp="${isp}"} ${statuses[key]}\n`;
+        response += `status_lastupdate{node="${node}",isp="${isp}" ${timestamp}\n}`;
     }
     res.send(response.trim());
 });
