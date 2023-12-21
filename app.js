@@ -33,7 +33,7 @@ app.get('/multi-isp-status', (req, res) => {
         const [node, isp] = key.split('-');
         const { status, timestamp } = statuses[key];
         response += `multiisp_status{node="${node}",isp="${isp}"} ${status}\n`;
-        response += `status_lastupdate{node="${node}",isp="${isp}" ${timestamp}\n}`;
+        response += `status_lastupdate{node="${node}",isp="${isp}"} ${timestamp}\n`;
     }
     res.send(response.trim());
 });
